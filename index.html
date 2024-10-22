@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Bag Checklist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        h1 {
+            color: #A020F0;
+        }
+        .checklist {
+            background-color: #fff;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+        .checklist label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #A020F0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .reset-btn:hover {
+            background-color: #8B0DAA;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Daily School Bag Checklist</h1>
+
+    <div class="checklist">
+        <label><input type="checkbox" id="notebooks"> Notebooks</label>
+        <label><input type="checkbox" id="textbooks"> Textbooks</label>
+        <label><input type="checkbox" id="pencil_case"> Pencil Case</label>
+        <label><input type="checkbox" id="lunch_box"> Lunch Box</label>
+        <label><input type="checkbox" id="water_bottle"> Water Bottle</label>
+        <label><input type="checkbox" id="id_card"> ID Card</label>
+
+        <button class="reset-btn" onclick="resetChecklist()">Reset Checklist</button>
+    </div>
+
+    <script>
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        // Load the checklist status from local storage
+        document.addEventListener('DOMContentLoaded', () => {
+            checkboxes.forEach(checkbox => {
+                const checked = localStorage.getItem(checkbox.id);
+                if (checked === 'true') {
+                    checkbox.checked = true;
+                }
+            });
+        });
+
+        // Save the checklist status to local storage
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                localStorage.setItem(checkbox.id, checkbox.checked);
+            });
+        });
+
+        // Reset the checklist every 24 hours
+        function resetChecklist() {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                localStorage.setItem(checkbox.id, false);
+            });
+        }
+
+        // Automatically reset the checklist every 24 hours
+        const lastReset = localStorage.getItem('lastReset');
+        const now = new Date().getTime();
+        const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+        if (!lastReset || now - lastReset > oneDay) {
+            resetChecklist();
+            localStorage.setItem('lastReset', now);
+        }
+    </script>
+
+</body>
+</html>
 
