@@ -179,3 +179,31 @@
 
 </body>
 </html>
+<script>
+    function readyForSchool() {
+        const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+        let allChecked = true;
+
+        checkboxes.forEach(checkbox => {
+            if (!checkbox.checked) {
+                allChecked = false;
+            }
+        });
+
+        const messageBox = document.getElementById('message-box');
+        const messageText = messageBox.querySelector('p');
+
+        if (allChecked) {
+            messageText.textContent = "You're all set!";
+        } else {
+            messageText.textContent = "You're not ready!";
+        }
+
+        messageBox.style.display = 'block';
+    }
+
+    function closeMessage() {
+        const messageBox = document.getElementById('message-box');
+        messageBox.style.display = 'none';
+    }
+</script>
