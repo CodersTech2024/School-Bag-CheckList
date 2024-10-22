@@ -15,24 +15,29 @@
         }
         h1 {
             color: #A020F0;
+            margin-top: 20px;
         }
-        .checklist {
+        .container {
             background-color: #fff;
-            margin: 50px auto;
+            margin: 20px auto;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+            max-width: 600px;
         }
-        .checklist label {
+        select, .checklist label {
             display: block;
-            margin-bottom: 10px;
-            font-size: 18px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
-        input[type="checkbox"] {
-            margin-right: 10px;
+        .checklist {
+            margin-top: 20px;
         }
-        .reset-btn {
+        .ready-btn {
             margin-top: 20px;
             padding: 10px 20px;
             background-color: #A020F0;
@@ -41,65 +46,136 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .reset-btn:hover {
+        .ready-btn:hover {
             background-color: #8B0DAA;
+        }
+        .message-box {
+            display: none;
+            background-color: #A020F0;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .close-btn {
+            background-color: white;
+            color: #A020F0;
+            border: none;
+            font-size: 20px;
+            float: right;
+            cursor: pointer;
+        }
+        .close-btn:hover {
+            color: #8B0DAA;
         }
     </style>
 </head>
 <body>
 
-    <h1>Daily School Bag Checklist</h1>
+    <h1>School Bag Checklist</h1>
 
-    <div class="checklist">
-        <label><input type="checkbox" id="notebooks"> Notebooks</label>
-        <label><input type="checkbox" id="textbooks"> Textbooks</label>
-        <label><input type="checkbox" id="pencil_case"> Pencil Case</label>
-        <label><input type="checkbox" id="lunch_box"> Lunch Box</label>
-        <label><input type="checkbox" id="water_bottle"> Water Bottle</label>
-        <label><input type="checkbox" id="id_card"> ID Card</label>
+    <div class="container">
+        <div class="location-selector">
+            <label for="country">Select Your Country</label>
+            <select id="country">
+                <option value="" disabled selected>Select your country</option>
+                <option value="UAE">UAE</option>
+                <option value="India">India</option>
+                <option value="UK">UK</option>
+            </select>
 
-        <button class="reset-btn" onclick="resetChecklist()">Reset Checklist</button>
+            <label for="state">Select Your State</label>
+            <select id="state">
+                <option value="" disabled selected>Select your state</option>
+            </select>
+
+            <label for="school">Select Your School</label>
+            <select id="school">
+                <option value="" disabled selected>Select your school</option>
+            </select>
+        </div>
+
+        <div class="checklist">
+            <label><input type="checkbox" id="notebooks"> Notebooks</label>
+            <label><input type="checkbox" id="textbooks"> Textbooks</label>
+            <label><input type="checkbox" id="pencil_case"> Pencil Case</label>
+            <label><input type="checkbox" id="lunch_box"> Lunch Box</label>
+            <label><input type="checkbox" id="water_bottle"> Water Bottle</label>
+            <label><input type="checkbox" id="id_card"> ID Card</label>
+        </div>
+
+        <button class="ready-btn" onclick="readyForSchool()">Ready for School</button>
+
+        <div id="message-box" class="message-box">
+            <button class="close-btn" onclick="closeMessage()">X</button>
+            <p>You're all set!</p>
+        </div>
     </div>
 
     <script>
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const stateOptions = {
+            'UAE': ['Abu Dhabi', 'Dubai', 'Sharjah'],
+            'India': ['Kerala', 'New Delhi', 'Gujarat'],
+            'UK': ['London', 'Manchester', 'Birmingham']
+        };
 
-        // Load the checklist status from local storage
-        document.addEventListener('DOMContentLoaded', () => {
-            checkboxes.forEach(checkbox => {
-                const checked = localStorage.getItem(checkbox.id);
-                if (checked === 'true') {
-                    checkbox.checked = true;
-                }
-            });
+        const schoolOptions = {
+            'Abu Dhabi': ['Shining Start International School', 'Model Private School'],
+            'Dubai': ['Gens Modern Academy', 'Delhi Private School Dubai'],
+            'Sharjah': ['Delhi Private School Sharjah', 'GIIS Sharjah'],
+            'Kerala': ['Chinmaya Vidyalaya', 'Montfort  School'],
+            'New Delhi': ['Delhi  Private School New Delhi', 'The Mothers International School'],
+            'Gujarat': ['Vallabh Ashrams MGM Amin', 'VN Savani School, Valsad'],
+            'London': ['North London Grammar School', 'City of London School'],
+            'Manchester': ['Manchester International School', 'Levenshulme High School'],
+            'Birmingham': ['Aston Manor Academy Phillips', 'Billesley Primary School Trittiford'],
+            
+        };
+
+        document.getElementById('country').addEventListener('change', function() {
+            const country = this.value;
+            const stateSelect = document.getElementById('state');
+            stateSelect.innerHTML = '<option value="" disabled selected>Select your state</option>';
+
+            if (stateOptions[country]) {
+                stateOptions[country].forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state;
+                    option.textContent = state;
+                    stateSelect.appendChild(option);
+                });
+            }
         });
 
-        // Save the checklist status to local storage
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                localStorage.setItem(checkbox.id, checkbox.checked);
-            });
+        document.getElementById('state').addEventListener('change', function() {
+            const state = this.value;
+            const schoolSelect = document.getElementById('school');
+            schoolSelect.innerHTML = '<option value="" disabled selected>Select your school</option>';
+
+            if (schoolOptions[state]) {
+                schoolOptions[state].forEach(school => {
+                    const option = document.createElement('option');
+                    option.value = school;
+                    option.textContent = school;
+                    schoolSelect.appendChild(option);
+                });
+            }
         });
 
-        // Reset the checklist every 24 hours
-        function resetChecklist() {
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
-                localStorage.setItem(checkbox.id, false);
-            });
+        function readyForSchool() {
+            const messageBox = document.getElementById('message-box');
+            messageBox.style.display = 'block';
         }
 
-        // Automatically reset the checklist every 24 hours
-        const lastReset = localStorage.getItem('lastReset');
-        const now = new Date().getTime();
-        const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-        if (!lastReset || now - lastReset > oneDay) {
-            resetChecklist();
-            localStorage.setItem('lastReset', now);
+        function closeMessage() {
+            const messageBox = document.getElementById('message-box');
+            messageBox.style.display = 'none';
         }
     </script>
 
 </body>
 </html>
-
